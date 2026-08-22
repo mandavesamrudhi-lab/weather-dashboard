@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Weather Dashboard</title>
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="dashboard.css">
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="top-header">
+
+        <div class="logo">
+            <span class="logo-icon">🌤️</span>
+            <span>Weather Dashboard</span>
+        </div>
+
+        <div class="header-actions">
+
+            <!-- Theme -->
+            <button
+                id="themeToggle"
+                class="header-action-btn"
+                type="button"
+                title="Switch theme"
+                aria-label="Switch theme"
+            >
+                <span id="themeIcon">🌙</span>
+            </button>
+
+            <!-- Favorites -->
+            <button
+                id="favoritesToggle"
+                class="header-action-btn"
+                type="button"
+                title="Favorite cities"
+                aria-label="Open favorite cities"
+            >
+                ⭐
+            </button>
+
+            <!-- Logout -->
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+                type="button"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <nav class="navigation">
+
+        <button
+            type="button"
+            class="nav-btn active"
+            onclick="showSlide(0)"
+        >
+            🌤️ Current
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(1)"
+        >
+            📊 History
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(2)"
+        >
+            🗺️ Map
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(3)"
+        >
+            📋 Details
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(4)"
+        >
+            🌍 Air Quality
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(5)"
+        >
+            📅 Forecast
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(6)"
+        >
+            🕐 Hourly
+        </button>
+
+        <button
+            type="button"
+            class="nav-btn"
+            onclick="showSlide(7)"
+        >
+            🤖 AI Assistant
+        </button>
+
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main>
+
+        <!-- =================================================
+             SEARCH SECTION
+        ================================================== -->
+
+        <section class="search-section">
+
+            <div class="search-content">
+
+                <div class="dashboard-badge">
+                    🌎 SMART WEATHER
+                </div>
+
+                <h1>
+                    Weather Dashboard
+                </h1>
+
+                <p>
+                    Search any city to explore live weather,
+                    forecasts, air quality and more.
+                </p>
+
+                <form
+                    id="searchForm"
+                    class="search-box"
+                >
+
+                    <input
+                        type="text"
+                        id="cityInput"
+                        placeholder="Enter city name..."
+                        autocomplete="off"
+                        aria-label="Enter city name"
+                    >
+
+                    <button
+                        type="submit"
+                        id="searchButton"
+                    >
+                        🔍 Search
+                    </button>
+
+                </form>
+
+                <p
+                    id="searchMessage"
+                    class="search-message"
+                >
+                    Search for a city to view weather information.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 1 - CURRENT WEATHER
+        ================================================== -->
+
+        <section class="slide active-slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    01
+                </span>
+
+                <div>
+                    <h2>🌤️ Current Weather</h2>
+
+                    <p>
+                        Live weather conditions for your selected city
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Main Weather Card -->
+
+            <div class="weather-main-card">
+
+                <div class="city-info">
+
+                    <div class="city-title-row">
+
+                        <div>
+
+                            <h2 id="cityName">
+                                Select a city
+                            </h2>
+
+                            <p id="countryName">
+                                ---
+                            </p>
+
+                        </div>
+
+                        <button
+                            id="favoriteCityBtn"
+                            class="favorite-city-btn"
+                            type="button"
+                            title="Add city to favorites"
+                            aria-label="Add city to favorites"
+                        >
+                            ☆
+                        </button>
+
+                    </div>
+
+                    <p>
+                        📍 Live weather information
+                    </p>
+
+                    <!-- Weather Alert -->
+
+                    <div
+                        id="weatherAlert"
+                        class="weather-alert normal"
+                        style="display: none;"
+                    >
+
+                        <div class="alert-icon">
+                            ☀️
+                        </div>
+
+                        <div class="alert-content">
+
+                            <h3 id="alertTitle">
+                                Weather Alert
+                            </h3>
+
+                            <p id="alertMessage">
+                                No alerts available.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Temperature -->
+
+                <div class="temperature-section">
+
+                    <div
+                        id="weatherIcon"
+                        aria-label="Weather condition"
+                    >
+                        🌤️
+                    </div>
+
+                    <div>
+
+                        <div class="temperature">
+
+                            <span id="temperature">
+                                --
+                            </span>
+
+                            °C
+
+                        </div>
+
+                        <p id="weatherDescription">
+                            Search for a city
+                        </p>
+
+                        <p>
+                            Feels like:
+                            <strong>
+                                <span id="feelsLike">
+                                    --
+                                </span>
+                                °C
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Weather Statistics -->
+
+            <div class="weather-cards">
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        💧
+                    </div>
+
+                    <h3>
+                        Humidity
+                    </h3>
+
+                    <p>
+                        <span id="humidity">--</span>%
+                    </p>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        💨
+                    </div>
+
+                    <h3>
+                        Wind Speed
+                    </h3>
+
+                    <p>
+                        <span id="windSpeed">--</span>
+                        km/h
+                    </p>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        🌡️
+                    </div>
+
+                    <h3>
+                        Pressure
+                    </h3>
+
+                    <p>
+                        <span id="pressure">--</span>
+                        hPa
+                    </p>
+
+                </div>
+
+
+                <div class="weather-card">
+
+                    <div class="card-icon">
+                        ☁️
+                    </div>
+
+                    <h3>
+                        Condition
+                    </h3>
+
+                    <p id="weatherConditionCard">
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 2 - HISTORY
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    02
+                </span>
+
+                <div>
+
+                    <h2>
+                        📊 Temperature History
+                    </h2>
+
+                    <p>
+                        Recent temperature trend
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="history-container">
+
+                <div class="history-chart">
+
+                    <canvas
+                        id="temperatureChart"
+                    ></canvas>
+
+                </div>
+
+
+                <div
+                    id="historyList"
+                    class="history-list"
+                >
+
+                    <div class="history-item">
+
+                        <span>
+                            Search a city
+                        </span>
+
+                        <strong>
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 3 - MAP
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    03
+                </span>
+
+                <div>
+
+                    <h2>
+                        🗺️ Weather Map
+                    </h2>
+
+                    <p>
+                        Geographic location of the selected city
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="map-container">
+
+                <div
+                    id="weatherMap"
+                    aria-label="Weather location map"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 4 - DETAILS
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    04
+                </span>
+
+                <div>
+
+                    <h2>
+                        📋 Weather Details
+                    </h2>
+
+                    <p>
+                        Detailed atmospheric information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="details-grid">
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        🌅
+                    </div>
+
+                    <h3>
+                        Sunrise
+                    </h3>
+
+                    <p id="sunrise">
+                        --
+                    </p>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        🌇
+                    </div>
+
+                    <h3>
+                        Sunset
+                    </h3>
+
+                    <p id="sunset">
+                        --
+                    </p>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        ❄️
+                    </div>
+
+                    <h3>
+                        Minimum Temperature
+                    </h3>
+
+                    <p>
+                        <span id="minTemp">
+                            --
+                        </span>
+                        °C
+                    </p>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        🔥
+                    </div>
+
+                    <h3>
+                        Maximum Temperature
+                    </h3>
+
+                    <p>
+                        <span id="maxTemp">
+                            --
+                        </span>
+                        °C
+                    </p>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        ☁️
+                    </div>
+
+                    <h3>
+                        Cloud Cover
+                    </h3>
+
+                    <p>
+                        <span id="cloudCover">
+                            --
+                        </span>%
+                    </p>
+
+                </div>
+
+
+                <div class="detail-card">
+
+                    <div class="card-icon">
+                        👁️
+                    </div>
+
+                    <h3>
+                        Visibility
+                    </h3>
+
+                    <p id="visibility">
+                        -- km
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 5 - AIR QUALITY
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    05
+                </span>
+
+                <div>
+
+                    <h2>
+                        🌍 Air Quality
+                    </h2>
+
+                    <p>
+                        Air pollution and atmospheric information
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="air-quality-grid">
+
+                <div class="air-card">
+
+                    <span>🌍</span>
+
+                    <h3>
+                        European AQI
+                    </h3>
+
+                    <p id="aqi">
+                        --
+                    </p>
+
+                </div>
+
+
+                <div class="air-card">
+
+                    <span>🫁</span>
+
+                    <h3>
+                        PM2.5
+                    </h3>
+
+                    <p>
+                        <span id="pm25">--</span>
+                        μg/m³
+                    </p>
+
+                </div>
+
+
+                <div class="air-card">
+
+                    <span>🌫️</span>
+
+                    <h3>
+                        PM10
+                    </h3>
+
+                    <p>
+                        <span id="pm10">--</span>
+                        μg/m³
+                    </p>
+
+                </div>
+
+
+                <div class="air-card">
+
+                    <span>☀️</span>
+
+                    <h3>
+                        Ozone
+                    </h3>
+
+                    <p>
+                        <span id="ozone">--</span>
+                        μg/m³
+                    </p>
+
+                </div>
+
+
+                <div class="air-card">
+
+                    <span>🏭</span>
+
+                    <h3>
+                        Nitrogen Dioxide
+                    </h3>
+
+                    <p>
+                        <span id="nitrogenDioxide">--</span>
+                        μg/m³
+                    </p>
+
+                </div>
+
+
+                <div class="air-card">
+
+                    <span>🌞</span>
+
+                    <h3>
+                        UV Index
+                    </h3>
+
+                    <p id="uvIndex">
+                        --
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 6 - FORECAST
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    06
+                </span>
+
+                <div>
+
+                    <h2>
+                        📅 7-Day Forecast
+                    </h2>
+
+                    <p>
+                        Upcoming weather conditions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="forecastContainer"
+                class="forecast-container"
+            >
+
+                <div class="forecast-loading">
+                    🔍 Search for a city to view the forecast.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 7 - HOURLY
+        ================================================== -->
+
+        <section class="slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    07
+                </span>
+
+                <div>
+
+                    <h2>
+                        🕐 24-Hour Forecast
+                    </h2>
+
+                    <p>
+                        Hour-by-hour weather conditions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="hourlyForecastContainer"
+                class="hourly-forecast-container"
+            >
+
+                <div class="hourly-loading">
+                    🔍 Search for a city to view hourly weather.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SLIDE 8 - AI ASSISTANT
+        ================================================== -->
+
+        <section class="slide ai-assistant-slide">
+
+            <div class="slide-title">
+
+                <span class="slide-number">
+                    08
+                </span>
+
+                <div>
+
+                    <h2>
+                        🤖 AI Weather Assistant
+                    </h2>
+
+                    <p>
+                        Smart recommendations based on weather
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ai-chat-box">
+
+                <!-- AI Header -->
+
+                <div class="ai-title">
+
+                    <span>
+                        🤖
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Weather Assistant
+                        </h2>
+
+                        <p class="ai-help">
+                            Ask about travel, clothing, rain
+                            or outdoor activities.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Weather Summary -->
+
+                <div class="ai-weather-summary">
+
+                    <div class="ai-weather-card">
+
+                        <span>🌡️</span>
+
+                        <h3>
+                            Temperature
+                        </h3>
+
+                        <p id="aiTemperature">
+                            -- °C
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-weather-card">
+
+                        <span>💧</span>
+
+                        <h3>
+                            Humidity
+                        </h3>
+
+                        <p id="aiHumidity">
+                            -- %
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-weather-card">
+
+                        <span>🌧️</span>
+
+                        <h3>
+                            Rain Chance
+                        </h3>
+
+                        <p id="aiRainChance">
+                            -- %
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-weather-card">
+
+                        <span>💨</span>
+
+                        <h3>
+                            Wind Speed
+                        </h3>
+
+                        <p id="aiWind">
+                            -- km/h
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Question Area -->
+
+                <div class="ai-question-box">
+
+                    <h3>
+                        Ask about today's weather
+                    </h3>
+
+                    <p>
+                        Type your question or select a quick
+                        question below.
+                    </p>
+
+
+                    <div class="ai-input-area">
+
+                        <input
+                            type="text"
+                            id="aiQuestion"
+                            placeholder="Example: Can I travel today?"
+                            autocomplete="off"
+                        >
+
+                        <button
+                            type="button"
+                            id="aiAskButton"
+                        >
+                            🤖 Ask
+                        </button>
+
+                    </div>
+
+
+                    <!-- Quick Questions -->
+
+                    <div class="quick-questions">
+
+                        <button
+                            type="button"
+                            onclick="askQuickQuestion('Can I travel today?')"
+                        >
+                            🧳 Can I travel?
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="askQuickQuestion('Should I carry an umbrella?')"
+                        >
+                            ☔ Need umbrella?
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="askQuickQuestion('What should I wear today?')"
+                        >
+                            👕 What should I wear?
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="askQuickQuestion('Is it good for outdoor activities?')"
+                        >
+                            🏃 Outdoor activity?
+                        </button>
+
+                    </div>
+
+
+                    <!-- AI Answer -->
+
+                    <div
+                        id="aiAnswer"
+                        class="ai-answer"
+                    >
+
+                        <div class="ai-answer-icon">
+                            🤖
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Weather Assistant
+                            </strong>
+
+                            <p>
+                                Search for a city and ask me
+                                a question.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         SLIDE CONTROLS
+    ====================================================== -->
+
+    <div class="slide-controls">
+
+        <button
+            type="button"
+            id="previousBtn"
+        >
+            ← Previous
+        </button>
+
+        <span id="slideIndicator">
+            1 / 8
+        </span>
+
+        <button
+            type="button"
+            id="nextBtn"
+        >
+            Next →
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         FAVORITES OVERLAY
+    ====================================================== -->
+
+    <div
+        id="favoritesOverlay"
+        class="favorites-overlay"
+    ></div>
+
+
+    <!-- =====================================================
+         FAVORITES PANEL
+    ====================================================== -->
+
+    <aside
+        id="favoritesPanel"
+        class="favorites-panel"
+    >
+
+        <div class="favorites-header">
+
+            <div>
+
+                <h2>
+                    ⭐ Favorite Cities
+                </h2>
+
+                <p>
+                    Quickly access your saved cities.
+                </p>
+
+            </div>
+
+            <button
+                id="closeFavorites"
+                class="close-favorites-btn"
+                type="button"
+                aria-label="Close favorites"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <!-- Current City -->
+
+        <div
+            id="favoriteCurrentCity"
+            class="favorite-current-city"
+        >
+
+            <div class="favorite-current-content">
+
+                <strong>
+                    Current city
+                </strong>
+
+                <span id="favoriteCurrentName">
+                    No city selected
+                </span>
+
+            </div>
+
+            <button
+                id="favoriteCurrentAction"
+                class="favorite-current-action"
+                type="button"
+            >
+                ☆ Save
+            </button>
+
+        </div>
+
+
+        <!-- Favorites List -->
+
+        <div
+            id="favoritesList"
+            class="favorites-list"
+        >
+
+            <div class="no-favorites">
+
+                <div class="no-favorites-icon">
+                    ⭐
+                </div>
+
+                <h3>
+                    No favorite cities
+                </h3>
+
+                <p>
+                    Search for a city and save it
+                    to access it quickly later.
+                </p>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         TOAST NOTIFICATION
+    ====================================================== -->
+
+    <div
+        id="weatherToast"
+        class="weather-toast"
+        role="status"
+        aria-live="polite"
+    >
+
+        <div class="toast-icon">
+            🌤️
+        </div>
+
+        <div class="toast-content">
+
+            <strong id="toastTitle">
+                Weather Dashboard
+            </strong>
+
+            <p id="toastMessage">
+                Welcome to your dashboard.
+            </p>
+
+        </div>
+
+        <button
+            id="closeToast"
+            type="button"
+            aria-label="Close notification"
+        >
+            ✕
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Weather Dashboard
+        </p>
+
+        <p>
+            DevOps Project • Weather Analytics
+        </p>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT LIBRARIES
+    ====================================================== -->
+
+    <!-- Chart.js -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+
+    <!-- Leaflet -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
+
+    <!-- Dashboard JavaScript -->
+
+    <script src="dashboard.js"></script>
+
+
+</body>
+</html>
